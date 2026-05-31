@@ -1,0 +1,1 @@
+Implement nftw() and scandir() by yourself
