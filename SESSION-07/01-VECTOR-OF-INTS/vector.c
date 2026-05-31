@@ -50,6 +50,7 @@ status_t pop_back(vector_int_t* p_vector, data_t* p_poped_data)
     p_vector->p_data = (data_t*)xrealloc(p_vector->p_data, (p_vector->size-1)*sizeof(data_t));
     p_vector->size -= 1;
 
+    printf("p_vector->size : %d", p_vector->size);
     if (p_vector->size == 0)
     {
         p_vector->p_data = NULL;
@@ -139,6 +140,8 @@ void* xrealloc(void* old_ptr, size_t new_size_in_bytes)
 {
     void* ptr = NULL;
     ptr = realloc(old_ptr, new_size_in_bytes);
+    printf("xrealloc : new_size_in_bytes : %zu\n", new_size_in_bytes);
+    printf("xrealloc : new ptr : %p\n", ptr);
     if (NULL == ptr)
     {
         fprintf(stderr, "fatal:ralloc errrrrrrrrrr");
