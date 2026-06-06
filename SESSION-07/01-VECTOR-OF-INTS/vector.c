@@ -142,7 +142,7 @@ void* xrealloc(void* old_ptr, size_t new_size_in_bytes)
     ptr = realloc(old_ptr, new_size_in_bytes);
     printf("xrealloc : new_size_in_bytes : %zu\n", new_size_in_bytes);
     printf("xrealloc : new ptr : %p\n", ptr);
-    if (NULL == ptr)
+    if (NULL == ptr && new_size_in_bytes != 0)
     {
         fprintf(stderr, "fatal:ralloc errrrrrrrrrr");
         exit(EXIT_FAILURE);

@@ -1,0 +1,17 @@
+Linked list :
+    - it solves issue of pop front, push front, longer the array, we need to move those elements further or vice versa by one unit
+    - because vector need contigous memory.
+    - linked list avoid this cost.
+    - Non contigeous organisation.
+    - do not contain any mathematical formula to derive address of different blocks.
+    - every instance will store address of next instance contigeously.
+    - if we reach to any instance then we can next or subsequest instance.
+    - we reach to the first instance using named.
+    - We can reach to all instances using one named instance.
+    - therefore this organisation can give data structure property.
+    - this organisation is called linked organisation or linked list
+    - we create a structre to store prev,next,data(heterogeneous type) in c
+    - self referencial pointers are used.
+    - explain what are self referencial structures
+    - Container types(We can manage multiple instance)
+    - Self referencial strctures paves way for linked data structure
