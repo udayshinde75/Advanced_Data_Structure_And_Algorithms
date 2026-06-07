@@ -1,0 +1,5 @@
+'.' operator
+
+instanceVariable.memberName
+
+addr + member offset relative to structure type of instance name
