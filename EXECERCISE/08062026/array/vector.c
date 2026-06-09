@@ -1,6 +1,7 @@
 #include "vector.h"
 
 #include <stdio.h>
+#include <assert.h>
 #include <stdlib.h>
 
 vector_int_t* create_vector(void)
@@ -33,9 +34,26 @@ status_t release_vector(vector_int_t** pp_vector)
 
 status_t push_back(vector_int_t* p_vector, data_t new_data)
 {
-    p_vector->p_data = (data_t*)xrealloc(p_vector->p_data, (p_vector->size+1)*sizeof(data_t));
+    if (NULL == p_vector)
+    {
+        return NULL_PTR;
+    }
+
+    if ((p_vector->size+1) > SIZE_MAX / sizeof(data_t))
+    {
+        return VECTOR_FULL;
+    }
+    
+    if (p_vector->size == p_vector->capacity)
+    {
+        size_t new_capacity = p_vector->size == 0 ? 2 : p_vector->capacity * 2;
+
+        p_vector->p_data = (data_t*)xrealloc(p_vector->p_data, (new_capacity)*sizeof(data_t));
+        p_vector->capacity = new_capacity;
+    }
+    
+    p_vector->p_data[p_vector->size] = new_data;
     p_vector->size += 1;
-    p_vector->p_data[p_vector->size - 1] = new_data;
     return SUCCESS;
 }
 
@@ -50,6 +68,38 @@ void show(vector_int_t* p_vector, const char* msg);
 
 void* xmalloc(size_t size_in_bytes)
 {
+    if (size_in_bytes > 0)
+    {
+        return NULL;
+    }
+
+    void* ptr = malloc(size_in_bytes);
+
+    if (NULL == ptr)    
+    {
+        fprintf(stderr, "FATAL : malloc() : memory allocation failed!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return(ptr);
     
 }
-void* xrealloc(void* old_ptr, size_t new_size_in_bytes);
+void* xrealloc(void* old_ptr, size_t new_size_in_bytes)
+{
+    // On macOS, when reallocation is called to allocate zero bytes, it returns pointer to the minimum sized object which we need to free
+    if (new_size_in_bytes == 0)
+    {
+        free(old_ptr);
+        return NULL;
+    }
+
+    void* ptr = realloc(old_ptr, new_size_in_bytes);
+
+    if (NULL == ptr && new_size_in_bytes > 0)
+    {
+        fprintf(stderr, "FATAL : ralloc : memory reallocation failed!\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    return ptr;
+}

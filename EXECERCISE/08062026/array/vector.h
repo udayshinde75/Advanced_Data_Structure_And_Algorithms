@@ -10,6 +10,7 @@
 #define VECTOR_EMPTY -1;
 #define NULL_PTR -2;
 #define MEMORY_ALLOCATION_FAILED -3;
+#define VECTOR_FULL -4
 
 typedef int data_t;
 typedef struct vector_int vector_int_t;
