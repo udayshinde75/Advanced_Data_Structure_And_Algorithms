@@ -4,6 +4,9 @@
 void test_vector(void);
 void handle_error(status_t result);
 
+// Assignment 1 : sum of all elements in an array
+long long summation_of_elements(vector_int_t* p_vector);
+
 
 int main(void)
 {
@@ -22,12 +25,22 @@ void test_vector(void)
     int continue_loop = 1;
     printf("***************Custom vector**************");
 
+    push_back(p_vector, 546);
+    push_back(p_vector, 87);
+    push_back(p_vector, 2345);
+    push_back(p_vector, 908);
+    push_back(p_vector, 453);
+    push_back(p_vector, 786);
+    push_back(p_vector, 76565);
+    push_back(p_vector, 897);    
+    
+
     while (continue_loop)
     {
-        printf("Select an Option:\n 1.push back\n 2.pop back\n 3.push front\n 4.pop front\n 5.show\n 6.exit\n");
+        printf("Select an Option:\n 1.push back\n 2.pop back\n 3.push front\n 4.pop front\n 5.show\n 6.exit\n 7.Add all elements\n");
         scanf("%d", &choice);
 
-        if (choice > 0 && choice < 7)
+        if (choice > 0 && choice < 8)
         {
             if (choice == 1)
             {
@@ -91,6 +104,11 @@ void test_vector(void)
             {
                 continue_loop = 0;
             }
+            else if (choice == 7)
+            {
+                printf("total sum : %lld\n", summation_of_elements(p_vector));
+            }
+            
         }
         else
         {
@@ -123,4 +141,21 @@ void handle_error(status_t result)
         default:
             break;
     }
+}
+
+long long summation_of_elements(vector_int_t* p_vector)
+{
+    if (p_vector->size == 0)
+    {
+        return 0;
+    }
+
+    long long total = 0;
+
+    for (size_t i = 0; i < p_vector->size; ++i)
+    {
+        total += p_vector->p_data[i];
+    }
+    
+    return total;
 }
