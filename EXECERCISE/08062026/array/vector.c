@@ -149,19 +149,21 @@ void show(vector_int_t* p_vector, const char* msg)
 {
     if (msg)
     {
-        printf("%s",msg);
+        printf("%s\n",msg);
     }
 
-    int i;
+    size_t i;
     for (i = 0; i < p_vector->size; ++i)
     {
-        printf("array[%d]:%d\n", i, p_vector->p_data[i]);
+        printf("array[%zu]:%d,", i, p_vector->p_data[i]);
     }
+    printf("\nvector size : %zu\n", p_vector->size);
+    printf("vector capacity : %zu\n", p_vector->capacity);
 }
 
 void* xmalloc(size_t size_in_bytes)
 {
-    if (size_in_bytes > 0)
+    if (size_in_bytes == 0)
     {
         return NULL;
     }
@@ -177,6 +179,7 @@ void* xmalloc(size_t size_in_bytes)
     return(ptr);
     
 }
+
 void* xrealloc(void* old_ptr, size_t new_size_in_bytes)
 {
     // On macOS, when reallocation is called to allocate zero bytes, it returns pointer to the minimum sized object which we need to free
