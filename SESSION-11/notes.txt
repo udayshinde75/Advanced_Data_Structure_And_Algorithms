@@ -1,0 +1,3 @@
+Reasons to use dummy/head node for linked list
+1. insert at begininng can change the pointer of linked list
+2. empyty node cannot be shown by null pointer
