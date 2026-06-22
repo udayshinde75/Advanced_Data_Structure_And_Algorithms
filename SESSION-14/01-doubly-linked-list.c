@@ -24,6 +24,7 @@ struct node
 {
     data_t data;
     node_t* next;
+    node_t* prev;
 };
 
 // Interface function declaration
@@ -104,13 +105,13 @@ status_t remove_data(list_t* p_list, data_t r_data);
 /// @brief searches @find_data in the @p_list. if found returns true, false otherwise
 /// @param p_list which linked list
 /// @param find_data data value whose membership must be checked int the @p_list
-/// @return bool value
-bool find(list_t* p_list, data_t find_data);
+/// @return status_t value
+status_t find(list_t* p_list, data_t find_data);
 
 /// @brief checks if there is any other node than the dummy node
 /// @param p_list which linked list
-/// @return bool value
-bool is_list_empty(list_t* p_list);
+/// @return status_t value
+status_t is_list_empty(list_t* p_list);
 
 /// @brief Counts the total number of nodes excluding the dummy nofe and returns the count
 /// @param p_list which linked list
@@ -120,7 +121,7 @@ len_t get_list_length(list_t* p_list);
 /// @brief prints the list on console by going through all non dummy nodes.
 /// @param p_list which linked list
 /// @param msg message to be displayed
-void show_list(list_t* p_list, const char* msg);
+status_t show_list(list_t* p_list, const char* msg);
 
 // destroy
 /// @brief Get the address of the headnode of the linked list to be destroyed by derefernencing pp_list. Free all nodes including the dummy node. Write NULL in the pointer variable whoes ddress present in @pp_list. Return SUCCESS
@@ -160,13 +161,13 @@ int main()
 
     show_list(p_list, "List after creations : ");
 
-    for (data = 1; data <= 10000; data = data + 1)
+    for (data = 1; data <= 100; data = data + 1)
     {
         status = insert_start(p_list, data);
         assert(status == SUCCESS);
     }
     
-    for (data = 100; data <= 200; data = data + 1)
+    for (data = 100; data <= 500; data = data + 100)
     {
         status = insert_end(p_list, data);
         assert(status == SUCCESS);
@@ -211,6 +212,18 @@ status_t insert_start(list_t* p_list, data_t new_data)
 
     node_t* new_node = get_node(new_data);
     new_node->next = p_list->next;
+    new_node->prev = p_list;
+
+    /*
+    prev link of p_list->next;
+    i.e.e p_list->next->prev must be set
+    before p_list->next is set to new node
+    doing it otherwise will break the list
+    */
+    if (p_list->next != NULL)
+    {
+        p_list->next->prev = new_node;
+    }
     p_list->next = new_node;
 
     return SUCCESS;
@@ -220,13 +233,19 @@ status_t insert_end(list_t* p_list, data_t new_data)
 {
     assert(p_list != NULL);
 
-    node_t* new_node = get_node(new_data);
     node_t* run = p_list;
+
     while (run->next != NULL)
     {
         run = run->next;
     }
+    
+    node_t* new_node = get_node(new_data);
+
+    new_node->next = NULL;
+    new_node->prev = run;
     run->next = new_node;
+
     return SUCCESS;
 }
 
@@ -234,52 +253,34 @@ status_t insert_after(list_t* p_list, data_t existing_data, data_t new_data)
 {
     assert(p_list != NULL);
 
-    node_t* new_node = get_node(new_data);
+    node_t* run = p_list->next;
 
-    node_t* node = search_node(p_list, existing_data);
+    while (run != NULL)
+    {
+        if (run->data == existing_data)
+        {
+            node_t* new_node = get_node(new_data);
+            new_node->next = run->next;
+            new_node->prev = run;
 
-    if (node != NULL)
-    {
-        new_node->next = node->next;
-        node->next = new_node;
+            if (run->next != NULL)
+            {
+                run->next->prev = new_node;
+            }
+            run->next = new_node;
+
+            return SUCCESS;
+        }
+        run = run->next;
     }
-    else
-    {
-        return LIST_DATA_NOT_FOUND;
-    }
-    
-    return SUCCESS;
+    return LIST_DATA_NOT_FOUND;
 }
 
 status_t insert_before(list_t* p_list, data_t existing_data, data_t new_data)
 {
     assert(p_list != NULL);
 
-    // node_t* new_code = get_node(new_data);
-
-    // node_t* node = search_node(p_list, existing_data);
-
-    // node_t* run = p_list->next;
-
-    // if (node != NULL)
-    // {
-    //     while (run->next != node)
-    //     {
-    //         run = run->next;
-    //     }
-        
-    //     new_code->next = node;
-    //     run->next = new_code;
-    // }
-    // else
-    // {
-    //     return LIST_DATA_NOT_FOUND;
-    // }
-    
-    // return SUCCESS;
-
     node_t* run = p_list->next;
-    node_t* run_prev = p_list;
 
     while (run != NULL)
     {
@@ -287,19 +288,19 @@ status_t insert_before(list_t* p_list, data_t existing_data, data_t new_data)
         {
             break;
         }
-        run_prev = run;
         run = run->next;
     }
-    
+
     if (NULL == run)
     {
-        return (LIST_DATA_NOT_FOUND);
+        return LIST_DATA_NOT_FOUND;
     }
-    
+
     node_t* new_node = get_node(new_data);
     new_node->next = run;
-    run_prev->next = new_node;
-
+    new_node->prev = run->prev;
+    run->prev->next = new_node;
+    run->prev = new_node;
     return SUCCESS;
 }
 
@@ -307,21 +308,17 @@ status_t insert_before(list_t* p_list, data_t existing_data, data_t new_data)
 status_t get_start(list_t* p_list, data_t* p_start_data)
 {
     assert(p_list != NULL);
-
     if (p_list->next == NULL)
     {
-        return LIST_DATA_NOT_FOUND;
+        return LIST_EMPTY;
     }
-
-    *p_start_data = p_list -> next -> data;
-    
+    *p_start_data = p_list->next->data;
     return SUCCESS;
 }
 
 status_t get_end(list_t* p_list, data_t* p_end_data)
 {
     assert(p_list != NULL);
-
     if (p_list->next == NULL)
     {
         return LIST_EMPTY;
@@ -329,11 +326,9 @@ status_t get_end(list_t* p_list, data_t* p_end_data)
     node_t* run = p_list;
     while (run->next != NULL)
     {
-        run = run->next;
+        run = run -> next;
     }
-    
     *p_end_data = run->data;
-
     return SUCCESS;
 }
 
@@ -345,17 +340,21 @@ status_t pop_start(list_t* p_list, data_t* p_start_data)
     {
         return LIST_EMPTY;
     }
+
+    node_t* node_to_remove = p_list->next;
     
-    node_t* first_NODE_WITH_DATA = p_list->next;
+    *p_start_data = node_to_remove->data;
 
-    *p_start_data = first_NODE_WITH_DATA->data;
+    p_list->next = node_to_remove->next;
 
-    p_list->next = first_NODE_WITH_DATA->next;
-
-    free(first_NODE_WITH_DATA);
-
+    if (node_to_remove->next != NULL)
+    {
+        node_to_remove->next->prev = p_list;
+    }
+    
+    free(node_to_remove);
+    
     return SUCCESS;
-
 }
 
 status_t pop_end(list_t* p_list, data_t* p_end_data)
@@ -366,24 +365,19 @@ status_t pop_end(list_t* p_list, data_t* p_end_data)
     {
         return LIST_EMPTY;
     }
-
+    
     node_t* run = p_list->next;
-    node_t* run_prev = p_list;
 
-    while(run != NULL)
+    while (run->next != NULL)
     {
-        if (run->next == NULL)
-        {
-            break;
-        }
-        run_prev = run;
         run = run->next;
     }
-
+    
     *p_end_data = run->data;
-    free (run);
-    run = NULL;
-    run_prev->next = NULL;
+
+    run->prev->next = NULL;
+
+    free(run);
 
     return SUCCESS;
 }
@@ -398,11 +392,22 @@ status_t remove_start(list_t* p_list)
         return LIST_EMPTY;
     }
 
+    // node_t* node_to_remove = p_list->next;
+    // node_to_remove->prev->next = node_to_remove->next;
+    // if (node_to_remove->next != NULL)
+    // {
+    //     node_to_remove->next->prev = node_to_remove->prev;
+    // }
+    // free(node_to_remove);
+
     node_t* node_to_remove = p_list->next;
-
     p_list->next = node_to_remove->next;
-
+    if (p_list->next != NULL)
+    {
+        p_list->next->prev = p_list;
+    }
     free(node_to_remove);
+
     return SUCCESS;
 }
 
@@ -414,22 +419,16 @@ status_t remove_end(list_t* p_list)
     {
         return LIST_EMPTY;
     }
-
+    
     node_t* run = p_list->next;
-    node_t* run_prev = p_list;
 
-    while(run != NULL)
+    while (run->next != NULL)
     {
-        if (run->next == NULL)
-        {
-            break;
-        }
-        run_prev = run;
         run = run->next;
     }
-
-    free (run);
-    run_prev->next = NULL;
+    
+    run->prev->next = NULL;
+    free(run);
 
     return SUCCESS;
 }
@@ -438,69 +437,90 @@ status_t remove_data(list_t* p_list, data_t r_data)
 {
     assert(p_list != NULL);
 
+    if (p_list->next == NULL)
+    {
+        return LIST_EMPTY;
+    }
+    
     node_t* run = p_list->next;
-    node_t* run_prev = p_list;
 
     while (run != NULL)
     {
         if (run->data == r_data)
         {
-            run_prev->next = run->next;
-            free (run);
-            return SUCCESS;
-        }
-        run_prev = run;
-        run = run -> next;
+            break;
+        } 
+        run = run->next;
     }
+
+    if (run == NULL)
+    {
+        return LIST_DATA_NOT_FOUND;
+    }
+
+    run->prev->next = run->next;
+
+    if (run -> next != NULL)
+    {
+        run->next->prev = run->prev;
+    }
+
+    free(run);
     
-    return LIST_DATA_NOT_FOUND;
+    return SUCCESS;
 }
 
 //Miscellaneous routines
-bool find(list_t* p_list, data_t find_data)
+status_t find(list_t* p_list, data_t find_data)
 {
     assert(p_list != NULL);
+
+    if (p_list->next == NULL)
+    {
+        return LIST_EMPTY;
+    }
+    
     node_t* run = p_list->next;
-    run = search_node(p_list, find_data);
+
+    while (run != NULL)
+    {
+        if (run->data == find_data)
+        {
+            return SUCCESS;
+        }
+        run = run->next;
+    }
     return (run != NULL);
 }
 
-bool is_list_empty(list_t* p_list)
+status_t is_list_empty(list_t* p_list)
 {
     assert(p_list != NULL);
-    return (p_list->next == NULL);
+
+    return (p_list->prev == NULL && p_list->next == NULL);
 }
 
 len_t get_list_length(list_t* p_list)
 {
     assert(p_list != NULL);
-    len_t node_counter = 0;
-    node_t* run = p_list->next;
-
-    while (run != NULL)
-    {
-        node_counter++;
-        run = run->next;
-    }
-
-    return node_counter;
 }
 
-void show_list(list_t* p_list, const char* msg)
+status_t show_list(list_t* p_list, const char* msg)
 {
     assert(p_list != NULL);
-    if (msg)
-    {
-        puts(msg);
-    }
+
     printf("[Start]->");
+
     node_t* run = p_list->next;
+
     while (run != NULL)
     {
-        printf("[%d]->", run->data);
+        printf("[%d]<->", run->data);
         run = run->next;
     }
-    printf("[END]\n");
+    puts("[END]");
+
+    return SUCCESS;
 }
 
 // destroy
@@ -532,17 +552,6 @@ status_t destroy_list(list_t** pp_list)
 node_t* search_node(list_t* p_list, data_t search_data)
 {
     assert(p_list != NULL);
-
-    node_t* run = p_list->next;
-    while (run != NULL)
-    {
-        if (run->data == search_data)
-        {
-            break;
-        }
-        run = run->next;
-    }
-    return run;
 }
 
 node_t* get_node(data_t new_data)
@@ -551,6 +560,7 @@ node_t* get_node(data_t new_data)
 
     new_node = (node_t*)xmalloc(sizeof(node_t));
     new_node->data = new_data;
+    new_node->prev = NULL;
     new_node->next = NULL;
 
     return (new_node);
