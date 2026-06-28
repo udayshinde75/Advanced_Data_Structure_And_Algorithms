@@ -1,572 +1,709 @@
-// Standard C header files
-#include <stdio.h>   // for declaration of printf(), puts().
-#include <stdlib.h>  // for malloc, free, rand, exit, EXIT_SUCCESS, EXIT_FAILURE
-#include <string.h>  // for memset
-#include <assert.h>  // for definition of assert() macro.
-#include <stdbool.h> // for bool
+//  Standard C header files 
+#include <stdio.h>      //  For declaration of printf(), puts() 
+#include <stdlib.h>     //  For declaration of malloc(), free(), rand(), exit(), EXIT_SUCCESS, EXIT_FAILURE
+#include <string.h>     //  For declaration of memset() 
+#include <assert.h>     //  For definition of assert() macro 
+#include <stdbool.h>    //  For definition of bool data type 
 
-// Symbolic constants
-#define TRUE                      (1)
-#define FALSE                     (0)
-#define SUCCESS                   (1)
-#define LIST_DATA_NOT_FOUND       (-1)
-#define LIST_EMPTY                (-2)
+//  Symbolic constants 
+#define TRUE                    (1) 
+#define FALSE                   (0) 
+#define SUCCESS                 (1) 
+#define LIST_DATA_NOT_FOUND     (-1) 
+#define LIST_EMPTY              (-2)
+#define INVALID_LIST            (-3)
 
-// typedefs
-typedef int data_t;
-typedef int status_t;
-typedef struct node node_t;
-typedef node_t list_t;
-typedef int len_t;
+//  Typedefs 
+typedef int data_t; 
+typedef int status_t; 
+typedef int len_t; 
+typedef struct node node_t; 
+typedef node_t list_t; 
 
-// Data layout definitions
-struct node
+//  Data layout definitions 
+struct node 
 {
-    data_t data;
-    node_t* next;
-};
+    data_t data; 
+    node_t* next; 
+}; 
 
-// Interface function declaration
-/// @brief function name : create_list();   
-/// @return function creates a new instance of a singly linked list by allocationg a dummy node, initializing the data member and the next member to 0 and NULL respectively and returns the address of the allocated node
-list_t* create_list(void);
+//  Interface function declarations 
 
-//Insert routines
-/// @brief insert start function allocates new node containing @new_data and attaches it as the starting position of the list pointed by @p_list
-/// @param p_list which linked list
-/// @param new_data which data value to be added
-/// @return status of function
-status_t insert_start(list_t* p_list, data_t new_data);
+//  Function Name: create_list() 
+//  @input:     None 
+//  @output:    Address of dynamically allocated instance of struct node (which is a dummy node)
+//  @behaviour: create_list() function creates a new instance of a singly linked list by allocating 
+//              a dummy node, initialising the data member and the next member to 0 and NULL respectively 
+//              and returns the address of the allocated node. 
+list_t* create_list(void); 
 
-/// @brief insert end function allocates new node containing @new_data and attaches it as the ending position of the list pointed by @p_list
-/// @param p_list which linked list
-/// @param new_data which data value to be added
-/// @return status of function
-status_t insert_end(list_t* p_list, data_t new_data);
+//  Insert Routines 
 
-/// @brief the algorithm searches @p_list for the occurances of @existing_data. if search fails it returns an error code LIST_DAT_NOT_FOUND. it allocates new node, populates it with @new_data and inserts a new node after existing node in the @p_list contaiing the first occurence of @existing_data and returns the status
-/// @param p_list which linked list
-/// @param existing_data existing data in the linked list after which @new_data must be inserted
-/// @param new_data new data value to be inserted
-/// @return status of the function
+//  Name:   insert_start() 
+//  @input: 
+//      @p_list:     which linked list? 
+//      @new_data:   which data value 
+//  @output: status of function. insert_start() returns only SUCCESS 
+//  @behaviour: insert_start() function allocates new node containing @new_data 
+//              and attaches it as the starting position of the list pointed by @p_list 
+status_t insert_start(list_t* p_list, data_t new_data); 
+
+//  Name:   insert_end()
+//  @input: 
+//      @p_list:     which linked list? 
+//      @new_data:   which data value 
+//  @output: status of function. insert_end() returns only SUCCESS 
+//  @behaviour: insert_end() function allocates new node containing @new_data 
+//              and attaches it as the ending position of the list pointed by @p_list 
+status_t insert_end(list_t* p_list, data_t new_data); 
+
+//  Name:   insert_after() 
+//  @input: 
+//      @p_list:            which linked list ? 
+//      @existing_data:     existing data in the linked list after which @new_data must be inserted 
+//      @new_data:          new data value to be inserted 
+//  @output:    Status of the function 
+//      SUCCESS:                If @existing_data is present in the linked list @p_list
+//      LIST_DATA_NOT_FOUND:    If @existing_data is not present in the linked list @p_list 
+//  @behaviour: 
+//      The algorithm searches @p_list for the occurrence of @existing_data. If search fails 
+//      it returns an error code LIST_DATA_NOT_FOUND. Otherwise, it allocates new node, populates it 
+//      with @new_data and inserts the new node after the existing node in the @p_list containing the 
+//      first occurrence of @existing_data and returns SUCCESS 
 status_t insert_after(list_t* p_list, data_t existing_data, data_t new_data);
 
-/// @brief the algorithm searches @p_list for the occurances of @existing_data. if search fails it returns an error code LIST_DAT_NOT_FOUND. it allocates new node, populates it with @new_data and inserts a new node before existing node in the @p_list contaiing the first occurence of @existing_data and returns the status
-/// @param p_list which linked list
-/// @param existing_data existing data in the linked list after which @new_data must be inserted
-/// @param new_data new data value to be inserted
-/// @return status of the function
-status_t insert_before(list_t* p_list, data_t existing_data, data_t new_data);
+//  Name:   insert_before() 
+//  @input: 
+//      @p_list:            which linked list ? 
+//      @existing_data:     existing data in the linked list before which @new_data must be inserted 
+//      @new_data:          new data value to be inserted 
+//  @output:    Status of the function 
+//      SUCCESS:                If @existing_data is present in the linked list @p_list
+//      LIST_DATA_NOT_FOUND:    If @existing_data is not present in the linked list @p_list 
+//  @behaviour: 
+//      The algorithm searches @p_list for the occurrence of @existing_data. If search fails 
+//      it returns an error code LIST_DATA_NOT_FOUND. Otherwise, it allocates new node, populates it 
+//      with @new_data and inserts the new node before the existing node in the @p_list containing the 
+//      first occurrence of @existing_data and returns SUCCESS 
+status_t insert_before(list_t* p_list, data_t existing_data, data_t new_data); 
 
-// Get And pop routines
-/// @brief Check if the p_list is empty. If true, return LIST_EMPTY. Otherwise, return data from firt node with data node via @p_start_data and return SUCCESS
-/// @param p_list which linked list
-/// @param p_start_data this is an out parameter. address of data_t variable used to return the start data
-/// @return Status of the function
-status_t get_start(list_t* p_list, data_t* p_start_data);
+//  Get and pop routines 
 
-/// @brief Check if the p_list is empty. If true, return LIST_EMPTY. Otherwise, return data from last node with data node via @p_end_data and return SUCCESS
-/// @param p_list which linked list
-/// @param p_start_data this is an out parameter. address of data_t variable used to return the start data
-/// @return Status of the function
-status_t get_end(list_t* p_list, data_t* p_end_data);
+//  Name:   get_start() 
+//  @input:     
+//      @p_list:        which linked list? 
+//      @p_start_data:  [OUT parameter] address of data_t variable used to return the start data 
+//  @output: Status of the function 
+//      SUCCESS:    If the @p_list is not empty 
+//      LIST_EMPTY  if the @p_list is empty 
+//  @behaviour: Check if the @p_list is empty. If true, return LIST_EMPTY. Otherwise, return data 
+//      from the first node with data via @p_start_data and return SUCCESS. (Note that the first 
+//      node with data is not detached from the linked list in the get routines)
+status_t get_start(list_t* p_list, data_t* p_start_data); 
 
-/// @brief Check if the p_list is empty. If true, return LIST_EMPTY. Otherwise, return data from firt node with data node via @p_start_data, delete the first with data and return SUCCESS
-/// @param p_list which linked list
-/// @param p_start_data this is an out parameter. address of data_t variable used to return the start data
-/// @return Status of the function
-status_t pop_start(list_t* p_list, data_t* p_start_data);
+//  Name:   get_end() 
+//  @input:     
+//      @p_list:        which linked list? 
+//      @p_end_data:    [OUT parameter] address of data_t variable used to return the end data 
+//  @output: Status of the function 
+//      SUCCESS:    If the @p_list is not empty 
+//      LIST_EMPTY  if the @p_list is empty 
+//  @behaviour: Check if the @p_list is empty. If true, return LIST_EMPTY. Otherwise, return data 
+//      from the last node with data via @p_end_data and return SUCCESS. (Note that the last
+//      node with data is not detached from the linked list in the get routines)
+status_t get_end(list_t* p_list, data_t* p_end_data); 
 
-/// @brief Check if the p_list is empty. If true, return LIST_EMPTY. Otherwise, return data from last node with data node via @p_end_data ,delete the last with dataand return SUCCESS
-/// @param p_list which linked list
-/// @param p_start_data this is an out parameter. address of data_t variable used to return the start data
-/// @return Status of the function
-status_t pop_end(list_t* p_list, data_t* p_end_data);
+//  Name:   pop_start() 
+//  @input:     
+//      @p_list:        which linked list? 
+//      @p_start_data:  [OUT parameter] address of data_t variable used to return the start data 
+//  @output: Status of the function 
+//      SUCCESS:    If the @p_list is not empty 
+//      LIST_EMPTY  if the @p_list is empty 
+//  @behaviour: Check if the @p_list is empty. If true, return LIST_EMPTY. Otherwise, return data 
+//      from the first node with data via @p_start_data, delete the first node with data and 
+//      return SUCCESS. 
+status_t pop_start(list_t* p_list, data_t* p_start_data); 
 
-// Remove routines
-/// @brief check if the p_list is emoty. if true then return error code list_empty. Other wise delete the first node with data and return success
-/// @param p_list which linked list
-/// @return status of function
-status_t remove_start(list_t* p_list);
+//  Name:   pop_end() 
+//  @input:     
+//      @p_list:        which linked list? 
+//      @p_end_data:    [OUT parameter] address of data_t variable used to return the end data 
+//  @output: Status of the function 
+//      SUCCESS:    If the @p_list is not empty 
+//      LIST_EMPTY  if the @p_list is empty 
+//  @behaviour: Check if the @p_list is empty. If true, return LIST_EMPTY. Otherwise, return data 
+//      from the last node with data via @p_end_data, delete the last node with data and 
+//      return SUCCESS. 
+status_t pop_end(list_t* p_list, data_t* p_end_data); 
 
-/// @brief check if the p_list is emoty. if true then return error code list_empty. Other wise delete the last node with data and return success
-/// @param p_list which linked list
-/// @return status of function
-status_t remove_end(list_t* p_list);
+//  Remove routines 
 
-/// @brief Search for the occurance of r_data in the lis. if not found retunr LIST_DATA_NOT_FOUND. Else the delete the first node of the first occurance will be removed
-/// @param p_list which linked list
-/// @param r_data data value to be removed from p*list
-/// @return status of function
-status_t remove_data(list_t* p_list, data_t r_data);
+//  name:   remove_start() 
+//  @input: 
+//      @p_list:    which linked list? 
+//  @output:    status of function 
+//      SUCCESS:    If the @p_list is not empty 
+//      LIST_EMPTY: If the @p_list is empty 
+//  @behaviour: 
+//      Check if the @p_list is empty. If true, then return error code LIST_EMPTY
+//      Otherwise, delete the first node with data and return SUCCESS 
+status_t remove_start(list_t* p_list); 
 
-//Miscellaneous routines
-/// @brief searches @find_data in the @p_list. if found returns true, false otherwise
-/// @param p_list which linked list
-/// @param find_data data value whose membership must be checked int the @p_list
-/// @return bool value
-bool find(list_t* p_list, data_t find_data);
+//  name:   remove_end() 
+//  @input: 
+//      @p_list:    which linked list? 
+//  @output:    status of function 
+//      SUCCESS:    If the @p_list is not empty 
+//      LIST_EMPTY: If the @p_list is empty 
+//  @behaviour: 
+//      Check if the @p_list is empty. If true, then return error code LIST_EMPTY
+//      Otherwise, delete the last node with data and return SUCCESS 
+status_t remove_end(list_t* p_list); 
 
-/// @brief checks if there is any other node than the dummy node
-/// @param p_list which linked list
-/// @return bool value
-bool is_list_empty(list_t* p_list);
+//  name:   remove_end() 
+//  @input: 
+//      @p_list:    which linked list? 
+//      @r_data:    Data value to be removed from @p_list 
+//  @output:    Status of the function 
+//      SUCCESS:                If the @r_data is present in the list 
+//      LIST_DATA_NOT_FOUND:    If the @r_data is not present in the list 
+//  @behaviour: 
+//      Search for the occurrence of @r_data in the @p_list. If not found then 
+//      return the error code LIST_DATA_NOT_FOUND. Else delete the first node 
+//      containing @r_data. In case of multiple-occurrences only the first occurrence will be 
+//      removed. 
+status_t remove_data(list_t* p_list, data_t r_data); 
 
-/// @brief Counts the total number of nodes excluding the dummy nofe and returns the count
-/// @param p_list which linked list
-/// @return len_t value
-len_t get_list_length(list_t* p_list);
+//  Miscellaneous routines 
 
-/// @brief prints the list on console by going through all non dummy nodes.
-/// @param p_list which linked list
-/// @param msg message to be displayed
-void show_list(list_t* p_list, const char* msg);
+//  name:   find() 
+//  @input: 
+//      @p_list:    which linked list? 
+//      @find_data: data value whose membership must be checked in the @p_list 
+//  @output:    bool value 
+//      TRUE:   if @find_data is present in the @p_list 
+//      FALSE:  otherwise 
+//  @behaviours: Searches @find_data in the @p_list. If found returns TRUE, FALSE otherwise. 
+status_t find(list_t* p_list, data_t find_data); 
 
-// destroy
-/// @brief Get the address of the headnode of the linked list to be destroyed by derefernencing pp_list. Free all nodes including the dummy node. Write NULL in the pointer variable whoes ddress present in @pp_list. Return SUCCESS
-/// @param pp_list Address of headenode of the linked list to be destroyed.
-/// @return status
-status_t destroy_list(list_t** pp_list);
+//  name:   is_list_empty() 
+//  @input: 
+//      @p_list:    which linked list? 
+//  @output: status_t
+//  @behaviour: Checks if there is any other node than the dummy node. 
+//              If yes, then return FALSE, if no then returns TRUE  
+status_t is_list_empty(list_t* p_list); 
 
-// helper
-/// @brief search for search_data in the @p_list. if found return the address of the furst node
-/// @param p_list Which linked list
-/// @param search_data data element to be searched
-/// @return node_t*
-node_t* search_node(list_t* p_list, data_t search_data);
+//  name:   get_list_length() 
+//  @input: 
+//      @p_list:    which linked list 
+//  @output:    len_t value 
+//  @behaviour: Counts the total number of nodes excluding the dummy node and returns the count 
+len_t get_list_length(list_t* p_list); 
 
-/// @brief allocate a new dynamic instance of node_t and store new_data in its data member and return the address to the newly allocated node.
-/// @param new_data 
-/// @return node_t*
-node_t* get_node(data_t new_data);
+//  name:   show_list() 
+//  @input: 
+//      @p_list:    which linked list? 
+//      @msg:       message to be displayed before displaying the list contents 
+//  @output:    None 
+//  @beahviour:     If @msg is not NULL then display it and then go through all non-dummy nodes
+//                  of the @p_list and print their data members 
+status_t show_list(list_t* p_list, const char* msg); 
 
-/// @brief Allocate dyanmic memory block of @size_in_bytes bytes on heap using malloc. do the sanity check for the return value of malloc. if the sanity fails emit error on std error device and exit from the application
-/// @param size_in_bytes 
-/// @return pointer
-void* xmalloc(size_t size_in_bytes);
+//  Destroy routine 
+//  name:   destroy_list() 
+//  @input: 
+//      @pp_list:   Address of head-node of the linked list to be destroyed 
+//  @output:        Status of the function, always SUCCESS. 
+//  @behaviour:     Get the address of head_node of the linked list to be destroyed by 
+//                  de-referencing pp_list. Free all nodes including the dummy node. 
+//                  Write NULL in the pointer variable whose address is present in @pp_list 
+//                  Return SUCCESS 
+status_t destroy_list(list_t** pp_list); 
 
-int main()
+//  Auxillary / Helper function declarations
+
+//  name:   search_node() 
+//  @input:     
+//      @p_list:        Which linked list? 
+//      @search_data:   Data value to be searched for membership
+//  @output:    node_t* 
+//  @behaviour:     Search for @search_data in the list @p_list. 
+//                  If not found return NULL 
+//                  If found, return the address of the first node 
+//                  containing @search_data 
+//  This helper function is used by find(), insert_after(), insert_before() etc. 
+node_t* search_node(list_t* p_list, data_t search_data);  
+
+//  name:   get_node() 
+//  @input:     
+//      @data_t :   data to be encapsulated in newly allocated node 
+//  @output:        node_t* 
+//  @behaviour:     Allocate a new dynamic instance of node_t and store new_data 
+//                  in its data member and return the address to the newly allocated node. 
+node_t* get_node(data_t new_data); 
+
+//  name:   xmalloc() 
+//  @input: 
+//      @size_in_bytes:     size_t variable storing the size in bytes of the memory block 
+//                          to be allocated dynamically 
+//  @output:                void* -> Base address of data block 
+//  @behaviour:             Allocate dynamic memory block of @size_in_bytes bytes 
+//                          on heap using library malloc(). Do the sanity check for the 
+//                          return value of malloc(). If the sanity check fails emit the 
+//                          error on standard error device and exit from the application 
+//                          If the sanity check succeeds, return the address return by 
+//                          malloc() 
+void* xmalloc(size_t size_in_bytes); 
+
+int main(void)
 {
-    list_t* p_list = NULL;
-    data_t data;
-    status_t status;
+    list_t* p_list = NULL; 
+    status_t status; 
+    data_t data; 
 
-    p_list = create_list();
+    p_list = create_list(); 
 
-    for (size_t i = 1; i <= 10; i++)
+    show_list(p_list, "List after creation:"); 
+
+    assert(get_start(p_list, &data) == LIST_EMPTY); 
+    assert(get_end(p_list, &data) == LIST_EMPTY); 
+    assert(pop_start(p_list, &data) == LIST_EMPTY); 
+    assert(pop_end(p_list, &data) == LIST_EMPTY); 
+    assert(remove_start(p_list) == LIST_EMPTY); 
+    assert(remove_end(p_list) == LIST_EMPTY); 
+    assert(is_list_empty(p_list) == TRUE); 
+    assert(get_list_length(p_list) == 0); 
+
+    for(data = 10; data <= 50; data = data + 10)
     {
-        insert_after(p_list, 30, 1000*i);
+        status = insert_start(p_list, data); 
+        assert(status == SUCCESS); 
     }
 
-    show_list(p_list, "List after creations : ");
+    show_list(p_list, "List After inserting five elements at start:"); 
 
-    for (data = 1; data <= 10000; data = data + 1)
+    for(data = 60; data <= 100; data += 10)
     {
-        status = insert_start(p_list, data);
-        assert(status == SUCCESS);
+        status = insert_end(p_list, data); 
+        assert(status == SUCCESS); 
     }
+
+    show_list(p_list, "Showing list after inserting at end:"); 
+
+    status = insert_after(p_list, -50, 1000); 
+    assert(status == LIST_DATA_NOT_FOUND); 
+
+    status = insert_after(p_list, 10, 1000); 
+    assert(status == SUCCESS); 
+
+    show_list(p_list, "Showing list after insert_after():"); 
+
+    status = insert_before(p_list, -100, 2000); 
+    assert(status == LIST_DATA_NOT_FOUND);
+
+    status = insert_before(p_list, 10, 2000); 
+    assert(status == SUCCESS); 
+
+    show_list(p_list, "Showing list after insert_before():"); 
+
+    status = get_start(p_list, &data); 
+    assert(status == SUCCESS); 
+    printf("get_start():start_data = %d\n", data); 
+    show_list(p_list, "Showing list after get_start():"); 
+
+    status = get_end(p_list, &data); 
+    assert(status == SUCCESS); 
+    printf("get_end():End data = %d\n", data); 
+    show_list(p_list, "Showing list after get_end():"); 
+
+    status = pop_start(p_list, &data); 
+    assert(status == SUCCESS); 
+    printf("pop_start():Poped start_data = %d\n", data); 
+    show_list(p_list, "Showing list after pop_start():"); 
+
+    status = pop_end(p_list, &data); 
+    assert(status == SUCCESS); 
+    printf("pop_end():Poped End data = %d\n", data); 
+    show_list(p_list, "Showing list after pop_end():"); 
     
-    for (data = 100; data <= 200; data = data + 1)
-    {
-        status = insert_end(p_list, data);
-        assert(status == SUCCESS);
-    }
-    show_list(p_list, "List after inserting five elements at start : ");
+    status = remove_start(p_list); 
+    assert(status == SUCCESS); 
+    show_list(p_list, "Showing list after remove_start():"); 
 
-    for (size_t i = 1; i <= 10; i++)
-    {
-        insert_after(p_list, 30, 1000*i);
+    status = remove_end(p_list); 
+    assert(status == SUCCESS); 
+    show_list(p_list, "Showing list after remove_end():"); 
 
-        insert_before(p_list, 30, 1000*i);
-    }
-    
-    show_list(p_list, "List after insert after : ");
-    int i = 0;
-    while (i < 300)
-    {
-        show_list(p_list, "List after pop end : ");
-        i++;
-        pop_end(p_list, &data);
-    }
-    
-    status = destroy_list(&p_list);
-    assert(status == SUCCESS && p_list == NULL);
-    puts("The linked list destroyed successfully!");
-    // show_list(p_list, "Showing list");
+    status = remove_data(p_list, -100); 
+    assert(status == LIST_DATA_NOT_FOUND); 
 
-    return 0;
+    status = remove_data(p_list, 10); 
+    assert(status == SUCCESS); 
+    show_list(p_list, "Showing list after remove_data():"); 
+
+    bool find_status = find(p_list, -100); 
+    printf("find_status for -100 in p_list:%d\n", find_status); 
+
+    find_status = find(p_list, 60); 
+    printf("find_status for 60 in p_list:%d\n", find_status); 
+
+    bool empty_status = is_list_empty(p_list); 
+    printf("Empty status for p_list:%d\n", empty_status);
+
+    len_t list_length = get_list_length(p_list); 
+    printf("Length of p_list: %d\n", list_length); 
+
+    status = destroy_list(&p_list); 
+    assert(status == SUCCESS && p_list == NULL); 
+    puts("The linked list destroyed successfully"); 
+
+    exit(EXIT_SUCCESS); 
 }
 
 
-// Interface function declaration
 list_t* create_list(void)
 {
-    return get_node(0);
+    return get_node(0); 
 }
 
-//Insert routines
 status_t insert_start(list_t* p_list, data_t new_data)
 {
-    assert(p_list != NULL);
+    node_t* new_node = get_node(new_data); 
 
-    node_t* new_node = get_node(new_data);
-    new_node->next = p_list->next;
-    p_list->next = new_node;
+    new_node->next = p_list->next; 
+    p_list->next = new_node; 
 
-    return SUCCESS;
+    return (SUCCESS); 
 }
 
 status_t insert_end(list_t* p_list, data_t new_data)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
 
-    node_t* new_node = get_node(new_data);
-    node_t* run = p_list;
-    while (run->next != NULL)
+    node_t* run = p_list; 
+    while(run->next != NULL)
     {
-        run = run->next;
+        run = run->next; 
     }
-    run->next = new_node;
-    return SUCCESS;
+
+    node_t* new_node = get_node(new_data); 
+    run->next = new_node; 
+
+    return (SUCCESS);    
 }
 
 status_t insert_after(list_t* p_list, data_t existing_data, data_t new_data)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
 
-    node_t* new_node = get_node(new_data);
+    node_t* existing_node = search_node(p_list, existing_data);
+    if(NULL == existing_node)
+        return (LIST_DATA_NOT_FOUND); 
 
-    node_t* node = search_node(p_list, existing_data);
-
-    if (node != NULL)
-    {
-        new_node->next = node->next;
-        node->next = new_node;
-    }
-    else
-    {
-        return LIST_DATA_NOT_FOUND;
-    }
+    node_t* new_node = get_node(new_data); 
+    new_node->next = existing_node->next; 
+    existing_node->next = new_node; 
     
-    return SUCCESS;
+    return (SUCCESS); 
 }
 
 status_t insert_before(list_t* p_list, data_t existing_data, data_t new_data)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
 
-    // node_t* new_code = get_node(new_data);
-
-    // node_t* node = search_node(p_list, existing_data);
-
-    // node_t* run = p_list->next;
-
-    // if (node != NULL)
-    // {
-    //     while (run->next != node)
-    //     {
-    //         run = run->next;
-    //     }
-        
-    //     new_code->next = node;
-    //     run->next = new_code;
-    // }
-    // else
-    // {
-    //     return LIST_DATA_NOT_FOUND;
-    // }
-    
-    // return SUCCESS;
-
-    node_t* run = p_list->next;
+    node_t* run = p_list->next; 
     node_t* run_prev = p_list;
-
-    while (run != NULL)
-    {
-        if (run->data == existing_data)
-        {
-            break;
-        }
-        run_prev = run;
-        run = run->next;
-    }
     
-    if (NULL == run)
+    while(run != NULL)
     {
-        return (LIST_DATA_NOT_FOUND);
+        if(run->data == existing_data)
+            break; 
+        run_prev = run; 
+        run = run->next; 
     }
-    
-    node_t* new_node = get_node(new_data);
-    new_node->next = run;
-    run_prev->next = new_node;
 
-    return SUCCESS;
+    if(NULL == run)
+        return (LIST_DATA_NOT_FOUND); 
+
+    node_t* new_node = get_node(new_data); 
+
+    new_node->next = run; 
+    run_prev->next = new_node; 
+
+    return (SUCCESS); 
 }
 
-// Get And pop routines
+//  Get and pop routines 
 status_t get_start(list_t* p_list, data_t* p_start_data)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+    if(p_list->next == NULL)
+        return (LIST_EMPTY); 
 
-    if (p_list->next == NULL)
-    {
-        return LIST_DATA_NOT_FOUND;
-    }
+    *p_start_data = p_list->next->data; 
 
-    *p_start_data = p_list -> next -> data;
-    
-    return SUCCESS;
+    return (SUCCESS); 
 }
 
 status_t get_end(list_t* p_list, data_t* p_end_data)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+    if(p_list->next == NULL)
+        return (LIST_EMPTY); 
 
-    if (p_list->next == NULL)
+    node_t* run = p_list; 
+    while(run->next != NULL)
     {
-        return LIST_EMPTY;
+        run = run->next; 
     }
-    node_t* run = p_list;
-    while (run->next != NULL)
-    {
-        run = run->next;
-    }
+
+    *p_end_data = run->data; 
     
-    *p_end_data = run->data;
-
-    return SUCCESS;
+    return (SUCCESS); 
 }
 
 status_t pop_start(list_t* p_list, data_t* p_start_data)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+    if(p_list->next == NULL) 
+        return (LIST_EMPTY); 
 
-    if (p_list->next == NULL)
-    {
-        return LIST_EMPTY;
-    }
+    node_t* first_node_with_data = p_list->next; 
     
-    node_t* first_NODE_WITH_DATA = p_list->next;
+    *p_start_data = first_node_with_data->data; 
 
-    *p_start_data = first_NODE_WITH_DATA->data;
+    p_list->next = first_node_with_data->next; 
+    free(first_node_with_data); 
 
-    p_list->next = first_NODE_WITH_DATA->next;
-
-    free(first_NODE_WITH_DATA);
-
-    return SUCCESS;
-
+    return (SUCCESS);   
 }
 
 status_t pop_end(list_t* p_list, data_t* p_end_data)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+    if(p_list->next == NULL)
+        return (LIST_EMPTY); 
 
-    if (p_list->next == NULL)
+    node_t* run = p_list->next; 
+    node_t* run_prev = p_list; 
+
+    while(run->next != NULL)
     {
-        return LIST_EMPTY;
+        run_prev = run; 
+        run = run->next; 
     }
 
-    node_t* run = p_list->next;
-    node_t* run_prev = p_list;
+    *p_end_data = run->data; 
+    run_prev->next = NULL; 
+    free(run); 
 
-    while(run != NULL)
-    {
-        if (run->next == NULL)
-        {
-            break;
-        }
-        run_prev = run;
-        run = run->next;
-    }
-
-    *p_end_data = run->data;
-    free (run);
-    run = NULL;
-    run_prev->next = NULL;
-
-    return SUCCESS;
+    return (SUCCESS); 
 }
 
-// Remove routines
+//  Remove routines 
 status_t remove_start(list_t* p_list)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+    if(p_list->next == NULL)
+        return (LIST_EMPTY); 
 
-    if (p_list->next == NULL)
-    {
-        return LIST_EMPTY;
-    }
+    node_t* first_node_with_data = p_list->next; 
 
-    node_t* node_to_remove = p_list->next;
+    p_list->next = first_node_with_data->next; 
+    free(first_node_with_data); 
 
-    p_list->next = node_to_remove->next;
-
-    free(node_to_remove);
-    return SUCCESS;
+    return (SUCCESS); 
 }
 
 status_t remove_end(list_t* p_list)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+    if(p_list->next == NULL)
+        return (LIST_EMPTY); 
 
-    if (p_list->next == NULL)
+    node_t* run = p_list->next; 
+    node_t* run_prev = p_list; 
+
+    while(run->next != NULL)
     {
-        return LIST_EMPTY;
+        run_prev = run; 
+        run = run->next; 
     }
 
-    node_t* run = p_list->next;
-    node_t* run_prev = p_list;
-
-    while(run != NULL)
-    {
-        if (run->next == NULL)
-        {
-            break;
-        }
-        run_prev = run;
-        run = run->next;
-    }
-
-    free (run);
-    run_prev->next = NULL;
-
-    return SUCCESS;
+    run_prev->next = NULL; 
+    free(run); 
+    
+    return (SUCCESS); 
 }
 
 status_t remove_data(list_t* p_list, data_t r_data)
 {
-    assert(p_list != NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
 
-    node_t* run = p_list->next;
-    node_t* run_prev = p_list;
+    node_t* run = p_list->next; 
+    node_t* run_prev = p_list; 
 
-    while (run != NULL)
+    while(run != NULL) 
     {
-        if (run->data == r_data)
-        {
-            run_prev->next = run->next;
-            free (run);
-            return SUCCESS;
-        }
-        run_prev = run;
-        run = run -> next;
+        if(run->data == r_data)
+            break; 
+        run_prev = run; 
+        run = run->next; 
     }
+
+    if(run == NULL)
+        return (LIST_DATA_NOT_FOUND); 
+
+    run_prev->next = run->next; 
+    free(run); 
     
-    return LIST_DATA_NOT_FOUND;
+    return (SUCCESS); 
 }
 
-//Miscellaneous routines
-bool find(list_t* p_list, data_t find_data)
+//  Miscellaneous routines 
+status_t find(list_t* p_list, data_t find_data)
 {
-    assert(p_list != NULL);
-    node_t* run = p_list->next;
-    run = search_node(p_list, find_data);
-    return (run != NULL);
+    node_t* run = NULL; 
+
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+
+    run = search_node(p_list, find_data); 
+
+    return (run != NULL); 
 }
 
-bool is_list_empty(list_t* p_list)
+status_t is_list_empty(list_t* p_list)
 {
-    assert(p_list != NULL);
-    return (p_list->next == NULL);
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+
+    return (p_list->next == NULL); 
 }
 
 len_t get_list_length(list_t* p_list)
 {
-    assert(p_list != NULL);
-    len_t node_counter = 0;
-    node_t* run = p_list->next;
+    len_t node_counter = 0; 
+    node_t* run = NULL; 
 
-    while (run != NULL)
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+
+    run = p_list->next; 
+    while(run != NULL)
     {
-        node_counter++;
-        run = run->next;
+        node_counter += 1; 
+        run = run->next; 
     }
 
-    return node_counter;
+    return (node_counter); 
 }
 
-void show_list(list_t* p_list, const char* msg)
+status_t show_list(list_t* p_list, const char* msg)
 {
-    assert(p_list != NULL);
-    if (msg)
+    node_t* run = NULL; 
+
+    if(p_list == NULL)
+        return (INVALID_LIST); 
+
+
+    if(msg != NULL)
+        puts(msg); 
+
+    printf("[START]->"); 
+
+    run = p_list->next; 
+    while(run != NULL)
     {
-        puts(msg);
+        printf("[%d]->", run->data); 
+        run = run->next; 
     }
-    printf("[Start]->");
-    node_t* run = p_list->next;
-    while (run != NULL)
-    {
-        printf("[%d]->", run->data);
-        run = run->next;
-    }
-    printf("[END]\n");
+
+    printf("[END]\n"); 
 }
 
-// destroy
 status_t destroy_list(list_t** pp_list)
 {
-    assert(pp_list != NULL);
-    list_t* p_list = NULL;
-    if (pp_list != NULL)
+    node_t* run = NULL; 
+    node_t* run_next = NULL; 
+    list_t* p_list = NULL; 
+
+    if(*pp_list != NULL)
     {
-        p_list = *pp_list;
-        if (NULL != p_list)
-        {
-            node_t* run = p_list->next;
-            node_t* run_next = NULL;
-            while (run != NULL)
-            {
-                run_next = run->next;
-                free(run);
-                run = run_next;
-            }
-            free(p_list);
-            *pp_list = NULL;
-        }
-    }   
-    return SUCCESS;
+        p_list = *pp_list; 
+        if(p_list == NULL)
+            return (INVALID_LIST);  
+    }
+    else 
+    {
+        return (INVALID_LIST); 
+    }
+
+    run = p_list->next; 
+    while(run != NULL) 
+    {
+        run_next = run->next; 
+        free(run); 
+        run = run_next; 
+    }
+
+    free(p_list); 
+    *pp_list = NULL; 
+    
+    return (SUCCESS); 
 }
 
-// helper
 node_t* search_node(list_t* p_list, data_t search_data)
 {
-    assert(p_list != NULL);
+    node_t* run = NULL; 
 
-    node_t* run = p_list->next;
-    while (run != NULL)
+    if(p_list == NULL)
+        return (NULL); 
+
+    run = p_list->next; 
+    while(run != NULL)
     {
-        if (run->data == search_data)
-        {
-            break;
-        }
-        run = run->next;
+        if(run->data == search_data)
+            break; 
+        run = run->next; 
     }
-    return run;
+
+    return (run); 
 }
 
 node_t* get_node(data_t new_data)
 {
-    node_t* new_node = NULL;
+    node_t* new_node = NULL; 
 
-    new_node = (node_t*)xmalloc(sizeof(node_t));
-    new_node->data = new_data;
-    new_node->next = NULL;
+    new_node = (node_t*)xmalloc(sizeof(node_t)); 
+    new_node->data = new_data; 
+    new_node->next = NULL; 
 
-    return (new_node);
+    return (new_node); 
 }
 
 void* xmalloc(size_t size_in_bytes)
 {
-    void* ptr = NULL;
+    void* ptr = NULL; 
 
-    ptr = malloc(size_in_bytes);
-    if (NULL == ptr && size_in_bytes != 0)
+    ptr = malloc(size_in_bytes); 
+    if(NULL == ptr && size_in_bytes != 0) 
     {
-        fprintf(stderr, "FATAL :MEMORY ALLOCATION FAILED");
-        exit (EXIT_FAILURE);
+        fprintf(stderr, "fatal:malloc():out of memory\n"); 
+        exit(EXIT_FAILURE); 
     }
 
-    return (ptr);
+    return (ptr); 
 }
-
