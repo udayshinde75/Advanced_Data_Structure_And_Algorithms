@@ -12,7 +12,7 @@
 typedef size_t hkey_t;
 typedef size_t len_t;
 typedef int status_t;
-typedef struct noe node_t;
+typedef struct node node_t;
 typedef node_t list_t;
 typedef struct hashq hashq_t;
 
