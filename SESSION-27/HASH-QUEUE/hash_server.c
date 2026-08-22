@@ -90,11 +90,51 @@ list_t* create_list(void)
 
     return p_list;
 }
-status_t insert_end(list_t* p_list, hkey_t key);
-status_t remove_data(list_t* p_list, hkey_t key);
-status_t search_data(list_t* p_list, hkey_t key);
-node_t* search_node(list_t* p_list, hkey_t key);
-len_t get_list_length(list_t* p_list);
+status_t insert_end(list_t* p_list, hkey_t key)
+{
+    generic_insert(p_list->prev, get_node(key), p_list);
+    return SUCCESS;
+}
+status_t remove_data(list_t* p_list, hkey_t key)
+{
+    node_t* p_delete = NULL;
+
+    p_delete = search_node(p_list, key);
+    if (p_delete == NULL)
+    {
+        return LIST_DATA_NOT_FOUND;
+    }
+    generic_delete(p_delete);
+    return SUCCESS;
+}
+status_t search_data(list_t* p_list, hkey_t key)
+{
+    return (search_node(p_list, key) != NULL);
+}
+node_t* search_node(list_t* p_list, hkey_t key)
+{
+    node_t* p_run = NULL;
+
+    for (p_run = p_list->next; p_run != p_list; p_run = p_run->next)
+    {
+        if (p_run->key == key)
+        {
+            return (p_run);
+        }
+    }
+    return (NULL);
+}
+len_t get_list_length(list_t* p_list)
+{
+    node_t* p_run = NULL;
+    len_t len = 0;
+
+    for (p_run = p_list->next; p_run != p_list; p_run = p_run->next)
+    {
+        ++len;
+    }
+    return len;
+}
 status_t destroy_list(list_t* p_list)
 {
     node_t* p_run = NULL;
